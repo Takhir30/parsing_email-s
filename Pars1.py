@@ -6,8 +6,9 @@ from bs4 import BeautifulSoup
 url = 'https://companies.dev.by'
 html = urlopen(url)
 bs = BeautifulSoup(html, 'html.parser')
-link = bs.find('tbody').tr.td.a.get_text()
-print(link)
+link = bs.find('tbody').tr.td.a
+
+print(link['href'])
 
 # pages = set()
 #
