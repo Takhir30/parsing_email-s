@@ -1,4 +1,6 @@
+import time
 import smtplib
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -7,21 +9,28 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 
-# Getting the links to another page
-url = 'https://companies.dev.by'
-html = urlopen(url)
-bs = BeautifulSoup(html, 'html.parser')
-links = bs.find_all('tbody').tr.td.a
+start_time = time.time()
 
-# From new page getting the email
-# and sending it
-for link in links:
-    new_url = url+link['href']
-    new_html = urlopen(new_url)
-    bs = BeautifulSoup(new_html, 'html.parser')
-    email = bs.find('div', {'class': 'h-card'}).ul.li.a['href']
-    send_email(email)
+try:
+    # Getting the links
+    url = 'https://companies.dev.by'
+    html = urlopen(url)
+    bs = BeautifulSoup(html, 'html.parser')
+    links = bs.find_all('tbody').tr.td.a
 
+    # From new page getting the email
+    # and sending the mail
+    for link in links:
+        new_url = url + link['href']
+        new_html = urlopen(new_url)
+        bs = BeautifulSoup(new_html, 'html.parser')
+        email = bs.find('div', {'class': 'h-card'}).ul.li.a['href']
+        send_email(email)
+        time.sleep(2)
+except Exception:
+    print("Something wrong!!!")
+
+print('Time needed: {}'.format(time.time() - start_time))
 
 # Mailing function
 def send_email(email):
