@@ -6,18 +6,20 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 
-# Getting the link to another page
+# Getting the links to another page
 url = 'https://companies.dev.by'
 html = urlopen(url)
 bs = BeautifulSoup(html, 'html.parser')
-link = bs.find('tbody').tr.td.a
+links = bs.find_all('tbody').tr.td.a
 
 # From new page getting the email
-new_url = url+link['href']
-new_html = urlopen(new_url)
-bs = BeautifulSoup(new_html, 'html.parser')
-email = bs.find('div', {'class': 'h-card'}).ul.li.a['href']
-send_email(email)
+# and sending it
+for link in links:
+    new_url = url+link['href']
+    new_html = urlopen(new_url)
+    bs = BeautifulSoup(new_html, 'html.parser')
+    email = bs.find('div', {'class': 'h-card'}).ul.li.a['href']
+    send_email(email)
 
 
 # Mailing function
